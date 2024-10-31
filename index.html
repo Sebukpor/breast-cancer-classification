@@ -158,7 +158,7 @@
 
         async function loadModel() {
     try {
-        model = await tf.loadGraphModel('breast/model.json'); // Update with your model path
+        model = await tf.loadGraphModel('model/model.json'); // Update with your model path
         console.log("Model loaded successfully");
     } catch (error) {
         console.error("Error loading model:", error);
