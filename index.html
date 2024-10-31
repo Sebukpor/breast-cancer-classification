@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breast Cancer Prediction</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        input {
+            margin: 5px 0;
+            padding: 10px;
+            width: 100%;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h2>Breast Cancer Prediction</h2>
+    <form id="inputForm">
+        <label for="feature1">1. Radius Mean:</label>
+        <input type="text" id="feature1" placeholder="e.g., 15.4" required>
+
+        <label for="feature2">2. Texture Mean:</label>
+        <input type="text" id="feature2" placeholder="e.g., 12.7" required>
+
+        <label for="feature3">3. Perimeter Mean:</label>
+        <input type="text" id="feature3" placeholder="e.g., 86.5" required>
+
+        <label for="feature4">4. Area Mean:</label>
+        <input type="text" id="feature4" placeholder="e.g., 545.0" required>
+
+        <label for="feature5">5. Smoothness Mean:</label>
+        <input type="text" id="feature5" placeholder="e.g., 0.1" required>
+
+        <label for="feature6">6. Compactness Mean:</label>
+        <input type="text" id="feature6" placeholder="e.g., 0.15" required>
+
+        <label for="feature7">7. Concavity Mean:</label>
+        <input type="text" id="feature7" placeholder="e.g., 0.05" required>
+
+        <label for="feature8">8. Concave Points Mean:</label>
+        <input type="text" id="feature8" placeholder="e.g., 0.1" required>
+
+        <label for="feature9">9. Symmetry Mean:</label>
+        <input type="text" id="feature9" placeholder="e.g., 0.2" required>
+
+        <label for="feature10">10. Fractal Dimension Mean:</label>
+        <input type="text" id="feature10" placeholder="e.g., 0.06" required>
+
+        <label for="feature11">11. Radius SE:</label>
+        <input type="text" id="feature11" placeholder="e.g., 0.5" required>
+
+        <label for="feature12">12. Texture SE:</label>
+        <input type="text" id="feature12" placeholder="e.g., 0.7" required>
+
+        <label for="feature13">13. Perimeter SE:</label>
+        <input type="text" id="feature13" placeholder="e.g., 3.2" required>
+
+        <label for="feature14">14. Area SE:</label>
+        <input type="text" id="feature14" placeholder="e.g., 40.0" required>
+
+        <label for="feature15">15. Smoothness SE:</label>
+        <input type="text" id="feature15" placeholder="e.g., 0.02" required>
+
+        <label for="feature16">16. Compactness SE:</label>
+        <input type="text" id="feature16" placeholder="e.g., 0.05" required>
+
+        <label for="feature17">17. Concavity SE:</label>
+        <input type="text" id="feature17" placeholder="e.g., 0.03" required>
+
+        <label for="feature18">18. Concave Points SE:</label>
+        <input type="text" id="feature18" placeholder="e.g., 0.01" required>
+
+        <label for="feature19">19. Symmetry SE:</label>
+        <input type="text" id="feature19" placeholder="e.g., 0.02" required>
+
+        <label for="feature20">20. Fractal Dimension SE:</label>
+        <input type="text" id="feature20" placeholder="e.g., 0.006" required>
+
+        <label for="feature21">21. Radius Worst:</label>
+        <input type="text" id="feature21" placeholder="e.g., 17.1" required>
+
+        <label for="feature22">22. Texture Worst:</label>
+        <input type="text" id="feature22" placeholder="e.g., 27.6" required>
+
+        <label for="feature23">23. Perimeter Worst:</label>
+        <input type="text" id="feature23" placeholder="e.g., 114.0" required>
+
+        <label for="feature24">24. Area Worst:</label>
+        <input type="text" id="feature24" placeholder="e.g., 1000.0" required>
+
+        <label for="feature25">25. Smoothness Worst:</label>
+        <input type="text" id="feature25" placeholder="e.g., 0.1" required>
+
+        <label for="feature26">26. Compactness Worst:</label>
+        <input type="text" id="feature26" placeholder="e.g., 0.4" required>
+
+        <label for="feature27">27. Concavity Worst:</label>
+        <input type="text" id="feature27" placeholder="e.g., 0.5" required>
+
+        <label for="feature28">28. Concave Points Worst:</label>
+        <input type="text" id="feature28" placeholder="e.g., 0.2" required>
+
+        <label for="feature29">29. Symmetry Worst:</label>
+        <input type="text" id="feature29" placeholder="e.g., 0.3" required>
+
+        <label for="feature30">30. Fractal Dimension Worst:</label>
+        <input type="text" id="feature30" placeholder="e.g., 0.07" required>
+
+        <button type="submit">Predict</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        let model;
+        const meanValues = [
+            1.41272917e+01, 1.92896485e+01, 9.19690334e+01, 6.54889104e+02,
+            9.63602812e-02, 1.04340984e-01, 8.87993158e-02, 4.89191459e-02,
+            1.81161863e-01, 6.27976098e-02, 4.05172056e-01, 1.21685343e+00,
+            2.86605923e+00, 4.03370791e+01, 7.04097891e-03, 2.54781388e-02,
+            3.18937163e-02, 1.17961371e-02, 2.05422988e-02, 3.79490387e-03,
+            1.62691898e+01, 2.56772232e+01, 1.07261213e+02, 8.80583128e+02,
+            1.32368594e-01, 2.54265044e-01, 2.72188483e-01, 1.14606223e-01,
+            2.90075571e-01, 8.39458172e-02
+        ];
+        
+        const scaleValues = [
+            3.52095076e+00, 4.29725464e+00, 2.42776193e+01, 3.51604754e+02,
+            1.40517641e-02, 5.27663291e-02, 7.96497253e-02, 3.87687325e-02,
+            2.73901809e-02, 7.05415588e-03, 2.77068942e-01, 5.51163427e-01,
+            2.02007710e+00, 4.54510134e+01, 2.99987837e-03, 1.78924359e-02,
+            3.01595231e-02, 6.16486075e-03, 8.25910439e-03, 3.32783958e-03,
+            3.25413300e+00, 5.22670814e+00, 3.03169753e+01, 4.48463726e+02,
+            3.01770395e-02, 3.92019648e-01, 5.09012850e-01, 2.11580055e-02,
+            5.43188349e-01, 3.22557020e-02
+        ];
+
+        async function loadModel() {
+    try {
+        model = await tf.loadGraphModel('breast/model.json'); // Update with your model path
+        console.log("Model loaded successfully");
+    } catch (error) {
+        console.error("Error loading model:", error);
+    }
+}
+
+
+        async function predict() {
+            const inputData = [];
+            for (let i = 1; i <= 30; i++) {
+                const value = parseFloat(document.getElementById(`feature${i}`).value);
+                const normalizedValue = (value - meanValues[i - 1]) / scaleValues[i - 1];
+                inputData.push(normalizedValue);
+            }
+
+            const inputTensor = tf.tensor2d([inputData]);
+            const prediction = model.predict(inputTensor);
+            const result = await prediction.data();
+
+            const resultText = result[0] > 0.5 ? "Malignant" : "Benign";
+            document.getElementById('result').innerText = `Prediction: ${resultText}`;
+        }
+
+        document.getElementById('inputForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            predict();
+        });
+
+        loadModel();
+    </script>
+</body>
+</html>
