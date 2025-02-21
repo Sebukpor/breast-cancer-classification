@@ -1,413 +1,419 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Breast Cancer Prediction</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #3f51b5;
-            --secondary-color: #2c387e;
-            --background-color: #f8f9fa;
-            --text-color: #2d3436;
-            --success-color: #4CAF50;
-            --danger-color: #f44336;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            margin: 0;
-            padding: 2rem;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-        }
-
-        h1 {
-            color: var(--success-color);
-            text-align: center;
-            margin-bottom: 2rem;
-            font-weight: 600;
-        }
-
-        .form-section {
-            margin-bottom: 2.5rem;
-        }
-
-        .section-title {
-            color: orange;
-            border-bottom: 2px solid orange;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.5rem;
-            font-size: 1.25rem;
-            font-weight: 500;
-        }
-
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .input-group {
-            position: relative;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text-color);
-        }
-
-        input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
-        }
-
-        button {
-            background-color: orange;
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 2rem auto 0;
-        }
-
-        button:hover {
-            background-color: var(--secondary-color);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .result-box {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 1.25rem;
-            font-weight: 500;
-            display: none;
-        }
-
-        .result-box.visible {
-            display: block;
-        }
-
-        .success {
-            background-color: #e8f5e9;
-            color: var(--success-color);
-            border: 2px solid var(--success-color);
-        }
-
-        .danger {
-            background-color: #ffebee;
-            color: var(--danger-color);
-            border: 2px solid var(--danger-color);
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            margin: 1rem 0;
-        }
-
-        .spinner {
-            width: 2rem;
-            height: 2rem;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .info-text {
-            text-align: center;
-            color: #666;
-            margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Breast Cancer Prediction</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --secondary-color: #2c387e;
+      --background-color: #f8f9fa;
+      --text-color: #2d3436;
+      --success-color: #4CAF50;
+      --danger-color: #f44336;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      margin: 0;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+    }
+    h1 {
+      color: var(--success-color);
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: 600;
+    }
+    .form-section {
+      margin-bottom: 2.5rem;
+    }
+    .section-title {
+      color: orange;
+      border-bottom: 2px solid orange;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+      font-size: 1.25rem;
+      font-weight: 500;
+    }
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .input-group {
+      position: relative;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+    input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+    }
+    button {
+      background-color: orange;
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 2rem auto 0;
+    }
+    button:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .result-box {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 500;
+      display: none;
+    }
+    .result-box.visible {
+      display: block;
+    }
+    .success {
+      background-color: #e8f5e9;
+      color: var(--success-color);
+      border: 2px solid var(--success-color);
+    }
+    .danger {
+      background-color: #ffebee;
+      color: var(--danger-color);
+      border: 2px solid var(--danger-color);
+    }
+    .loading {
+      display: none;
+      text-align: center;
+      margin: 1rem 0;
+    }
+    .spinner {
+      width: 2rem;
+      height: 2rem;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .info-text {
+      text-align: center;
+      color: #666;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .explanation-section {
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: #f0f0f0;
+      border-left: 5px solid orange;
+    }
+    .explanation-section h2 {
+      margin-top: 0;
+      color: var(--secondary-color);
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>DAS medhub Breast Cancer Risk Assessment</h1>
-        <p class="info-text">Please enter the patient's diagnostic metrics below. All fields are required. Values should be numerical measurements from diagnostic tests.</p>
-        
-        <form id="inputForm">
-            <!-- Mean Features Section -->
-            <div class="form-section">
-                <h2 class="section-title">Mean Features</h2>
-                <div class="input-grid">
-                    <div class="input-group">
-                        <label for="feature1">Radius Mean</label>
-                        <input type="text" id="feature1" placeholder="e.g., 15.4" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature2">Texture Mean</label>
-                        <input type="text" id="feature2" placeholder="e.g., 12.7" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature3">Perimeter Mean</label>
-                        <input type="text" id="feature3" placeholder="e.g., 86.5" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature4">Area Mean</label>
-                        <input type="text" id="feature4" placeholder="e.g., 545.0" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature5">Smoothness Mean</label>
-                        <input type="text" id="feature5" placeholder="e.g., 0.1" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature6">Compactness Mean</label>
-                        <input type="text" id="feature6" placeholder="e.g., 0.15" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature7">Concavity Mean</label>
-                        <input type="text" id="feature7" placeholder="e.g., 0.05" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature8">Concave Points Mean</label>
-                        <input type="text" id="feature8" placeholder="e.g., 0.1" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature9">Symmetry Mean</label>
-                        <input type="text" id="feature9" placeholder="e.g., 0.2" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature10">Fractal Dimension Mean</label>
-                        <input type="text" id="feature10" placeholder="e.g., 0.06" required>
-                    </div>
-                </div>
-            </div>
+  <div class="container">
+    <h1>DAS medhub Breast Cancer Risk Assessment</h1>
+    <p class="info-text">
+      Please enter the patient's diagnostic metrics below. All fields are required. Values should be numerical measurements from diagnostic tests.
+    </p>
 
-            <!-- Standard Error Features Section -->
-            <div class="form-section">
-                <h2 class="section-title">Standard Error Features</h2>
-                <div class="input-grid">
-                    <div class="input-group">
-                        <label for="feature11">Radius SE</label>
-                        <input type="text" id="feature11" placeholder="e.g., 0.5" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature12">Texture SE</label>
-                        <input type="text" id="feature12" placeholder="e.g., 0.7" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature13">Perimeter SE</label>
-                        <input type="text" id="feature13" placeholder="e.g., 3.2" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature14">Area SE</label>
-                        <input type="text" id="feature14" placeholder="e.g., 40.0" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature15">Smoothness SE</label>
-                        <input type="text" id="feature15" placeholder="e.g., 0.02" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature16">Compactness SE</label>
-                        <input type="text" id="feature16" placeholder="e.g., 0.05" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature17">Concavity SE</label>
-                        <input type="text" id="feature17" placeholder="e.g., 0.03" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature18">Concave Points SE</label>
-                        <input type="text" id="feature18" placeholder="e.g., 0.01" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature19">Symmetry SE</label>
-                        <input type="text" id="feature19" placeholder="e.g., 0.02" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature20">Fractal Dimension SE</label>
-                        <input type="text" id="feature20" placeholder="e.g., 0.006" required>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Worst Features Section -->
-            <div class="form-section">
-                <h2 class="section-title">Worst Features</h2>
-                <div class="input-grid">
-                    <div class="input-group">
-                        <label for="feature21">Radius Worst</label>
-                        <input type="text" id="feature21" placeholder="e.g., 17.1" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature22">Texture Worst</label>
-                        <input type="text" id="feature22" placeholder="e.g., 27.6" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature23">Perimeter Worst</label>
-                        <input type="text" id="feature23" placeholder="e.g., 114.0" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature24">Area Worst</label>
-                        <input type="text" id="feature24" placeholder="e.g., 1000.0" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature25">Smoothness Worst</label>
-                        <input type="text" id="feature25" placeholder="e.g., 0.1" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature26">Compactness Worst</label>
-                        <input type="text" id="feature26" placeholder="e.g., 0.4" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature27">Concavity Worst</label>
-                        <input type="text" id="feature27" placeholder="e.g., 0.5" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature28">Concave Points Worst</label>
-                        <input type="text" id="feature28" placeholder="e.g., 0.2" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature29">Symmetry Worst</label>
-                        <input type="text" id="feature29" placeholder="e.g., 0.3" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="feature30">Fractal Dimension Worst</label>
-                        <input type="text" id="feature30" placeholder="e.g., 0.07" required>
-                    </div>
-                </div>
-            </div>
-
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Analyzing results...</p>
-            </div>
-
-            <button type="submit">
-                <span class="material-icons">science</span>
-                Analyze Diagnosis
-            </button>
-        </form>
-
-        <div class="result-box" id="result"></div>
+    <!-- Explanation Section -->
+    <div class="explanation-section">
+      <h2>Understanding the Metrics</h2>
+      <p><strong>Mean Features:</strong> Represent the average measurements of cell nuclei characteristics (e.g., Radius, Texture, Perimeter). Higher values in features such as Perimeter or Area may indicate larger or irregularly shaped cells.</p>
+      <p><strong>Standard Error (SE) Features:</strong> Quantify the variability or dispersion in the measurements. Lower SE values indicate more consistent measurements, while higher values suggest greater variability.</p>
+      <p><strong>Worst Features:</strong> Capture the most extreme (or worst) measurements for each metric. These are particularly important since extreme values can highlight abnormal tumor characteristics that may indicate malignancy.</p>
+      <p>
+        Together, these metrics provide the model with a comprehensive profile of the tumor, helping determine whether it is more likely to be malignant or benign. After analysis, a <strong>Benign</strong> result suggests no malignancy was detected, while a <strong>Malignant</strong> result indicates potential malignancy that may require further diagnostic evaluation.
+      </p>
     </div>
 
-    <script>
-        let model;
-        const meanValues = [
-            1.41272917e+01, 1.92896485e+01, 9.19690334e+01, 6.54889104e+02,
-            9.63602812e-02, 1.04340984e-01, 8.87993158e-02, 4.89191459e-02,
-            1.81161863e-01, 6.27976098e-02, 4.05172056e-01, 1.21685343e+00,
-            2.86605923e+00, 4.03370791e+01, 7.04097891e-03, 2.54781388e-02,
-            3.18937163e-02, 1.17961371e-02, 2.05422988e-02, 3.79490387e-03,
-            1.62691898e+01, 2.56772232e+01, 1.07261213e+02, 8.80583128e+02,
-            1.32368594e-01, 2.54265044e-01, 2.72188483e-01, 1.14606223e-01,
-            2.90075571e-01, 8.39458172e-02
-        ];
-        
-        const scaleValues = [
-            3.52095076e+00, 4.29725464e+00, 2.42776193e+01, 3.51604754e+02,
-            1.40517641e-02, 5.27663291e-02, 7.96497253e-02, 3.87687325e-02,
-            2.73901809e-02, 7.05415588e-03, 2.77068942e-01, 5.51163427e-01,
-            2.02007710e+00, 4.54510134e+01, 2.99987837e-03, 1.78924359e-02,
-            3.01595231e-02, 6.16486075e-03, 8.25910439e-03, 2.64374475e-03,
-            4.82899258e+00, 6.14085432e+00, 3.35730016e+01, 5.68856459e+02,
-            2.28123569e-02, 1.57198171e-01, 2.08440875e-01, 6.56745545e-02,
-            6.18130785e-02, 1.80453893e-02
-        ];
+    <form id="inputForm">
+      <!-- Mean Features Section -->
+      <div class="form-section">
+        <h2 class="section-title">Mean Features</h2>
+        <div class="input-grid">
+          <div class="input-group">
+            <label for="feature1">Radius Mean</label>
+            <input type="text" id="feature1" placeholder="e.g., 15.4" required title="Average distance from the center to the edge of the cell nucleus">
+          </div>
+          <div class="input-group">
+            <label for="feature2">Texture Mean</label>
+            <input type="text" id="feature2" placeholder="e.g., 12.7" required title="Average standard deviation of the gray-scale values">
+          </div>
+          <div class="input-group">
+            <label for="feature3">Perimeter Mean</label>
+            <input type="text" id="feature3" placeholder="e.g., 86.5" required title="Average length of the cell nucleus boundary">
+          </div>
+          <div class="input-group">
+            <label for="feature4">Area Mean</label>
+            <input type="text" id="feature4" placeholder="e.g., 545.0" required title="Average size of the cell nucleus">
+          </div>
+          <div class="input-group">
+            <label for="feature5">Smoothness Mean</label>
+            <input type="text" id="feature5" placeholder="e.g., 0.1" required title="Average local variation in cell nucleus radius">
+          </div>
+          <div class="input-group">
+            <label for="feature6">Compactness Mean</label>
+            <input type="text" id="feature6" placeholder="e.g., 0.15" required title="Average ratio of perimeter² to area, indicating cell shape regularity">
+          </div>
+          <div class="input-group">
+            <label for="feature7">Concavity Mean</label>
+            <input type="text" id="feature7" placeholder="e.g., 0.05" required title="Average measure of the concave regions on the cell nucleus boundary">
+          </div>
+          <div class="input-group">
+            <label for="feature8">Concave Points Mean</label>
+            <input type="text" id="feature8" placeholder="e.g., 0.1" required title="Average number of concave points on the cell nucleus">
+          </div>
+          <div class="input-group">
+            <label for="feature9">Symmetry Mean</label>
+            <input type="text" id="feature9" placeholder="e.g., 0.2" required title="Average symmetry of the cell nucleus">
+          </div>
+          <div class="input-group">
+            <label for="feature10">Fractal Dimension Mean</label>
+            <input type="text" id="feature10" placeholder="e.g., 0.06" required title="Average complexity of the cell nucleus boundary">
+          </div>
+        </div>
+      </div>
 
-        async function loadModel() {
-            try {
-                model = await tf.loadGraphModel('model/model.json'); // Update with your model path
-                console.log("Model loaded successfully");
-            } catch (error) {
-                console.error("Error loading model:", error);
-            }
+      <!-- Standard Error Features Section -->
+      <div class="form-section">
+        <h2 class="section-title">Standard Error Features</h2>
+        <div class="input-grid">
+          <div class="input-group">
+            <label for="feature11">Radius SE</label>
+            <input type="text" id="feature11" placeholder="e.g., 0.5" required title="Standard error of the radius measurements">
+          </div>
+          <div class="input-group">
+            <label for="feature12">Texture SE</label>
+            <input type="text" id="feature12" placeholder="e.g., 0.7" required title="Standard error of the texture measurements">
+          </div>
+          <div class="input-group">
+            <label for="feature13">Perimeter SE</label>
+            <input type="text" id="feature13" placeholder="e.g., 3.2" required title="Standard error of the perimeter measurements">
+          </div>
+          <div class="input-group">
+            <label for="feature14">Area SE</label>
+            <input type="text" id="feature14" placeholder="e.g., 40.0" required title="Standard error of the area measurements">
+          </div>
+          <div class="input-group">
+            <label for="feature15">Smoothness SE</label>
+            <input type="text" id="feature15" placeholder="e.g., 0.02" required title="Standard error of the smoothness measurements">
+          </div>
+          <div class="input-group">
+            <label for="feature16">Compactness SE</label>
+            <input type="text" id="feature16" placeholder="e.g., 0.05" required title="Standard error of the compactness measurements">
+          </div>
+          <div class="input-group">
+            <label for="feature17">Concavity SE</label>
+            <input type="text" id="feature17" placeholder="e.g., 0.03" required title="Standard error of the concavity measurements">
+          </div>
+          <div class="input-group">
+            <label for="feature18">Concave Points SE</label>
+            <input type="text" id="feature18" placeholder="e.g., 0.01" required title="Standard error of the concave points measurements">
+          </div>
+          <div class="input-group">
+            <label for="feature19">Symmetry SE</label>
+            <input type="text" id="feature19" placeholder="e.g., 0.02" required title="Standard error of the symmetry measurements">
+          </div>
+          <div class="input-group">
+            <label for="feature20">Fractal Dimension SE</label>
+            <input type="text" id="feature20" placeholder="e.g., 0.006" required title="Standard error of the fractal dimension measurements">
+          </div>
+        </div>
+      </div>
+
+      <!-- Worst Features Section -->
+      <div class="form-section">
+        <h2 class="section-title">Worst Features</h2>
+        <div class="input-grid">
+          <div class="input-group">
+            <label for="feature21">Radius Worst</label>
+            <input type="text" id="feature21" placeholder="e.g., 17.1" required title="Worst (largest) radius measurement">
+          </div>
+          <div class="input-group">
+            <label for="feature22">Texture Worst</label>
+            <input type="text" id="feature22" placeholder="e.g., 27.6" required title="Worst (largest) texture measurement">
+          </div>
+          <div class="input-group">
+            <label for="feature23">Perimeter Worst</label>
+            <input type="text" id="feature23" placeholder="e.g., 114.0" required title="Worst (largest) perimeter measurement">
+          </div>
+          <div class="input-group">
+            <label for="feature24">Area Worst</label>
+            <input type="text" id="feature24" placeholder="e.g., 1000.0" required title="Worst (largest) area measurement">
+          </div>
+          <div class="input-group">
+            <label for="feature25">Smoothness Worst</label>
+            <input type="text" id="feature25" placeholder="e.g., 0.1" required title="Worst (largest) smoothness measurement">
+          </div>
+          <div class="input-group">
+            <label for="feature26">Compactness Worst</label>
+            <input type="text" id="feature26" placeholder="e.g., 0.4" required title="Worst (largest) compactness measurement">
+          </div>
+          <div class="input-group">
+            <label for="feature27">Concavity Worst</label>
+            <input type="text" id="feature27" placeholder="e.g., 0.5" required title="Worst (largest) concavity measurement">
+          </div>
+          <div class="input-group">
+            <label for="feature28">Concave Points Worst</label>
+            <input type="text" id="feature28" placeholder="e.g., 0.2" required title="Worst (largest) concave points measurement">
+          </div>
+          <div class="input-group">
+            <label for="feature29">Symmetry Worst</label>
+            <input type="text" id="feature29" placeholder="e.g., 0.3" required title="Worst (largest) symmetry measurement">
+          </div>
+          <div class="input-group">
+            <label for="feature30">Fractal Dimension Worst</label>
+            <input type="text" id="feature30" placeholder="e.g., 0.07" required title="Worst (largest) fractal dimension measurement">
+          </div>
+        </div>
+      </div>
+
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Analyzing results...</p>
+      </div>
+
+      <button type="submit">
+        <span class="material-icons">science</span>
+        Analyze Diagnosis
+      </button>
+    </form>
+
+    <div class="result-box" id="result"></div>
+    <p class="info-text">
+      A <strong>Benign</strong> result indicates no malignancy was detected based on the input metrics. A <strong>Malignant</strong> result suggests that further diagnostic evaluation may be needed.
+    </p>
+  </div>
+
+  <script>
+    let model;
+    const meanValues = [
+      1.41272917e+01, 1.92896485e+01, 9.19690334e+01, 6.54889104e+02,
+      9.63602812e-02, 1.04340984e-01, 8.87993158e-02, 4.89191459e-02,
+      1.81161863e-01, 6.27976098e-02, 4.05172056e-01, 1.21685343e+00,
+      2.86605923e+00, 4.03370791e+01, 7.04097891e-03, 2.54781388e-02,
+      3.18937163e-02, 1.17961371e-02, 2.05422988e-02, 3.79490387e-03,
+      1.62691898e+01, 2.56772232e+01, 1.07261213e+02, 8.80583128e+02,
+      1.32368594e-01, 2.54265044e-01, 2.72188483e-01, 1.14606223e-01,
+      2.90075571e-01, 8.39458172e-02
+    ];
+    
+    const scaleValues = [
+      3.52095076e+00, 4.29725464e+00, 2.42776193e+01, 3.51604754e+02,
+      1.40517641e-02, 5.27663291e-02, 7.96497253e-02, 3.87687325e-02,
+      2.73901809e-02, 7.05415588e-03, 2.77068942e-01, 5.51163427e-01,
+      2.02007710e+00, 4.54510134e+01, 2.99987837e-03, 1.78924359e-02,
+      3.01595231e-02, 6.16486075e-03, 8.25910439e-03, 2.64374475e-03,
+      4.82899258e+00, 6.14085432e+00, 3.35730016e+01, 5.68856459e+02,
+      2.28123569e-02, 1.57198171e-01, 2.08440875e-01, 6.56745545e-02,
+      6.18130785e-02, 1.80453893e-02
+    ];
+
+    async function loadModel() {
+      try {
+        model = await tf.loadGraphModel('model/model.json'); // Update with your model path
+        console.log("Model loaded successfully");
+      } catch (error) {
+        console.error("Error loading model:", error);
+      }
+    }
+
+    function showLoading() {
+      document.querySelector('.loading').style.display = 'block';
+      document.querySelector('button').disabled = true;
+    }
+
+    function hideLoading() {
+      document.querySelector('.loading').style.display = 'none';
+      document.querySelector('button').disabled = false;
+    }
+
+    async function predict() {
+      showLoading();
+      try {
+        const inputData = [];
+        for (let i = 1; i <= 30; i++) {
+          const value = parseFloat(document.getElementById(`feature${i}`).value);
+          const normalizedValue = (value - meanValues[i - 1]) / scaleValues[i - 1];
+          inputData.push(normalizedValue);
         }
 
-        function showLoading() {
-            document.querySelector('.loading').style.display = 'block';
-            document.querySelector('button').disabled = true;
-        }
+        const inputTensor = tf.tensor2d([inputData]);
+        const prediction = model.predict(inputTensor);
+        const result = await prediction.data();
 
-        function hideLoading() {
-            document.querySelector('.loading').style.display = 'none';
-            document.querySelector('button').disabled = false;
-        }
+        const resultText = result[0] > 0.5 ? "Malignant" : "Benign";
+        const resultBox = document.getElementById('result');
+        resultBox.className = `result-box visible ${resultText === 'Benign' ? 'success' : 'danger'}`;
+        resultBox.innerHTML = `
+          ${resultText === 'Benign' ? '✓' : '✗'}
+          <strong>${resultText}</strong>
+          <p>${resultText === 'Benign' ? 'No malignancy detected' : 'Potential malignancy detected'}</p>
+        `;
+      } catch (error) {
+        console.error("Prediction error:", error);
+        const resultBox = document.getElementById('result');
+        resultBox.className = "result-box visible danger";
+        resultBox.innerHTML = "❌ Error processing prediction. Please try again.";
+      } finally {
+        hideLoading();
+      }
+    }
 
-        async function predict() {
-            showLoading();
-            try {
-                const inputData = [];
-                for (let i = 1; i <= 30; i++) {
-                    const value = parseFloat(document.getElementById(`feature${i}`).value);
-                    const normalizedValue = (value - meanValues[i - 1]) / scaleValues[i - 1];
-                    inputData.push(normalizedValue);
-                }
+    document.getElementById('inputForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      predict();
+    });
 
-                const inputTensor = tf.tensor2d([inputData]);
-                const prediction = model.predict(inputTensor);
-                const result = await prediction.data();
-
-                const resultText = result[0] > 0.5 ? "Malignant" : "Benign";
-                const resultBox = document.getElementById('result');
-                resultBox.className = `result-box visible ${resultText === 'Benign' ? 'success' : 'danger'}`;
-                resultBox.innerHTML = `
-                    ${resultText === 'Benign' ? '✓' : '✗'}
-                    <strong>${resultText}</strong>
-                    <p>${resultText === 'Benign' ? 'No malignancy detected' : 'Potential malignancy detected'}</p>
-                `;
-            } catch (error) {
-                console.error("Prediction error:", error);
-                const resultBox = document.getElementById('result');
-                resultBox.className = "result-box visible danger";
-                resultBox.innerHTML = "❌ Error processing prediction. Please try again.";
-            } finally {
-                hideLoading();
-            }
-        }
-
-        document.getElementById('inputForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            predict();
-        });
-
-        loadModel();
-    </script>
+    loadModel();
+  </script>
 </body>
 </html>
