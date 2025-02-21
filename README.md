@@ -21,7 +21,8 @@ The model has achieved the following performance on a validation/test dataset:
 - **F1 Score:** 0.9858  
 
 ### Confusion Matrix
-[[354 3] [ 3 209]]
+[[354 3]
+[ 3 209]]
 
 - **True Negatives:** 354  
 - **False Positives:** 3  
